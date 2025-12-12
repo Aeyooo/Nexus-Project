@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { TrendingUp, ArrowRight, Play, Sun, Moon } from 'lucide-vue-next'
 
-const isDark = useState('theme', () => false)
+// Use Cookie for persistence across reloads. Default to true (Dark Mode)
+const isDark = useCookie<boolean>('theme', { default: () => true })
 const toggleTheme = () => isDark.value = !isDark.value
 
 const scrollToSection = (id: string) => {

@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { TrendingUp, LayoutDashboard, GitCompare, Leaf, Zap, Droplet, AlertTriangle } from 'lucide-vue-next'
+import { TrendingUp, LayoutDashboard, GitCompare, Leaf, Zap, Droplet, AlertTriangle, Sun, Moon } from 'lucide-vue-next'
 
-// State
+// State: Use Cookie for persistence. Default to true (Dark Mode)
 const activeTab = ref('single')
-const isDark = useState('theme')
-//hi
+const isDark = useCookie<boolean>('theme', { default: () => true }) 
+
+const toggleTheme = () => isDark.value = !isDark.value
 
 // Scenario A Inputs
 const inputsA = ref({ crops: 50, renewables: 30, waterEff: 40 })
@@ -24,6 +25,7 @@ const { data: outputsB } = await fetchProjections('scenario-b', inputsB)
     
     <!-- App Header -->
     <header class="h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-6 shrink-0 z-20">
+      <!-- ... Header content ... -->
       <div class="flex items-center gap-4">
         <NuxtLink to="/" class="flex items-center gap-2 group">
            <div class="bg-indigo-600 text-white p-1.5 rounded shadow-sm">
@@ -34,13 +36,22 @@ const { data: outputsB } = await fetchProjections('scenario-b', inputsB)
         <div class="h-6 w-px bg-slate-200 dark:bg-slate-700 mx-2"></div>
         <!-- Tab Switcher -->
         <nav class="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
-           <button @click="activeTab = 'single'" :class="['px-3 py-1.5 text-xs font-semibold rounded-md flex gap-2', activeTab === 'single' ? 'bg-white dark:bg-slate-700 shadow-sm text-indigo-700 dark:text-indigo-300' : 'text-slate-500']">
+           <button @click="activeTab = 'single'" :class="['px-3 py-1.5 text-xs font-semibold rounded-md flex gap-2 transition-all', activeTab === 'single' ? 'bg-white dark:bg-slate-700 shadow-sm text-indigo-700 dark:text-indigo-300' : 'text-slate-500']">
              <LayoutDashboard :size="14" /> Single
            </button>
-           <button @click="activeTab = 'compare'" :class="['px-3 py-1.5 text-xs font-semibold rounded-md flex gap-2', activeTab === 'compare' ? 'bg-white dark:bg-slate-700 shadow-sm text-indigo-700 dark:text-indigo-300' : 'text-slate-500']">
+           <button @click="activeTab = 'compare'" :class="['px-3 py-1.5 text-xs font-semibold rounded-md flex gap-2 transition-all', activeTab === 'compare' ? 'bg-white dark:bg-slate-700 shadow-sm text-indigo-700 dark:text-indigo-300' : 'text-slate-500']">
              <GitCompare :size="14" /> Compare
            </button>
         </nav>
+      </div>
+
+      <!-- Add Toggle Button -->
+      <div class="flex items-center gap-3">
+          <button @click="toggleTheme" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <Sun v-if="isDark" :size="20" class="text-slate-500 dark:text-slate-400" />
+            <Moon v-else :size="20" class="text-slate-500 dark:text-slate-400" />
+          </button>
+          <!-- ... existing buttons ... -->
       </div>
     </header>
 
@@ -53,15 +64,15 @@ const { data: outputsB } = await fetchProjections('scenario-b', inputsB)
         
         <!-- Inputs A -->
         <div class="space-y-2">
-           <div class="bg-slate-50 dark:bg-slate-800 p-2 rounded-lg text-center text-xs font-bold text-indigo-600">SCENARIO A</div>
+           <div class="bg-indigo-50 dark:bg-slate-800 p-2 rounded-lg text-center text-xs font-bold text-indigo-700 dark:text-indigo-400">SCENARIO A</div>
            <SliderControl label="Crop Intensity" :icon="Leaf" v-model="inputsA.crops" colorClass="text-emerald-500" />
            <SliderControl label="Renewables %" :icon="Zap" v-model="inputsA.renewables" colorClass="text-amber-500" />
            <SliderControl label="Water Eff." :icon="Droplet" v-model="inputsA.waterEff" colorClass="text-cyan-500" />
         </div>
 
         <!-- Inputs B (Conditional) -->
-        <div v-if="activeTab === 'compare'" class="mt-8 pt-8 border-t border-slate-100 dark:border-slate-800 space-y-2">
-           <div class="bg-slate-50 dark:bg-slate-800 p-2 rounded-lg text-center text-xs font-bold text-purple-600">SCENARIO B</div>
+        <div v-if="activeTab === 'compare'" class="mt-8 pt-8 border-t border-slate-100 dark:border-slate-800 space-y-2 animate-fade-up">
+           <div class="bg-purple-50 dark:bg-slate-800 p-2 rounded-lg text-center text-xs font-bold text-purple-700 dark:text-purple-400">SCENARIO B</div>
            <SliderControl label="Crop Intensity" :icon="Leaf" v-model="inputsB.crops" colorClass="text-emerald-500" />
            <SliderControl label="Renewables %" :icon="Zap" v-model="inputsB.renewables" colorClass="text-amber-500" />
            <SliderControl label="Water Eff." :icon="Droplet" v-model="inputsB.waterEff" colorClass="text-cyan-500" />
@@ -73,7 +84,7 @@ const { data: outputsB } = await fetchProjections('scenario-b', inputsB)
         <div :class="['grid gap-6', activeTab === 'compare' ? 'grid-cols-2' : 'grid-cols-1']">
           
           <!-- Card A -->
-          <Card class="p-6">
+          <Card class="p-6 animate-fade-up">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="font-semibold text-slate-800 dark:text-slate-100">Scenario A Outcomes</h3>
                 <Badge color="blue">Primary</Badge>
@@ -110,7 +121,7 @@ const { data: outputsB } = await fetchProjections('scenario-b', inputsB)
           </Card>
 
           <!-- Card B -->
-          <Card v-if="activeTab === 'compare'" class="p-6 border-indigo-200 dark:border-indigo-800 relative overflow-hidden">
+          <Card v-if="activeTab === 'compare'" class="p-6 border-indigo-200 dark:border-indigo-800 relative overflow-hidden animate-fade-up animate-delay-100">
              <div class="absolute top-0 right-0 w-24 h-24 bg-purple-100 dark:bg-purple-900/20 rounded-bl-full -mr-10 -mt-10 opacity-50 pointer-events-none"></div>
              
              <div class="flex justify-between items-center mb-6">
@@ -128,7 +139,7 @@ const { data: outputsB } = await fetchProjections('scenario-b', inputsB)
                 <div class="bg-white dark:bg-slate-800 p-3 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm">
                     <div class="flex justify-between items-end">
                         <div class="text-xs text-slate-500 dark:text-slate-400 font-semibold mb-1">Food</div>
-                        <div :class="['text-xs font-bold', outputsB.food > outputsA.food ? 'text-emerald-500' : 'text-red-500']">
+                        <div :class="['text-xs font-bold', outputsB.food > outputsA.food ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400']">
                            {{ outputsB.food > outputsA.food ? '+' : '' }}{{ (outputsB.food - outputsA.food).toFixed(0) }}
                         </div>
                     </div>
@@ -138,7 +149,7 @@ const { data: outputsB } = await fetchProjections('scenario-b', inputsB)
                 <div class="bg-white dark:bg-slate-800 p-3 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm">
                     <div class="flex justify-between items-end">
                         <div class="text-xs text-slate-500 dark:text-slate-400 font-semibold mb-1">Energy</div>
-                        <div :class="['text-xs font-bold', outputsB.energy > outputsA.energy ? 'text-emerald-500' : 'text-red-500']">
+                        <div :class="['text-xs font-bold', outputsB.energy > outputsA.energy ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400']">
                            {{ outputsB.energy > outputsA.energy ? '+' : '' }}{{ (outputsB.energy - outputsA.energy).toFixed(0) }}
                         </div>
                     </div>
@@ -148,7 +159,7 @@ const { data: outputsB } = await fetchProjections('scenario-b', inputsB)
                 <div class="bg-white dark:bg-slate-800 p-3 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm">
                     <div class="flex justify-between items-end">
                         <div class="text-xs text-slate-500 dark:text-slate-400 font-semibold mb-1">Water</div>
-                        <div :class="['text-xs font-bold', outputsB.water > outputsA.water ? 'text-emerald-500' : 'text-red-500']">
+                        <div :class="['text-xs font-bold', outputsB.water > outputsA.water ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400']">
                            {{ outputsB.water > outputsA.water ? '+' : '' }}{{ (outputsB.water - outputsA.water).toFixed(0) }}
                         </div>
                     </div>

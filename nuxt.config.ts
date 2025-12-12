@@ -4,6 +4,11 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ['@nuxtjs/tailwindcss'],
   css: ['~/assets/css/main.css'],
+  tailwindcss: {
+    config: {
+      darkMode: 'class'
+    }
+  },
   app: {
     pageTransition: { name: 'page', mode: 'out-in' }, // Smooth page transitions
     head: {
