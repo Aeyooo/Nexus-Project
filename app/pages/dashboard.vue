@@ -89,7 +89,7 @@ const { data: outputsB } = await fetchProjections('scenario-b', inputsB)
           <Card class="p-4 md:p-6 animate-fade-up">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="font-semibold text-slate-800 dark:text-slate-100">Scenario A Outcomes</h3>
-                <UiBadge color="blue">Primary</UiBadge>
+                <Badge color="blue">Primary</Badge>
             </div>
             
             <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-2 md:p-4 border border-slate-100 dark:border-slate-700 mb-6">
@@ -98,9 +98,9 @@ const { data: outputsB } = await fetchProjections('scenario-b', inputsB)
             
             <!-- Stat Cards A -->
             <div class="grid grid-cols-3 gap-2 md:gap-4">
-                <UiStatCard label="Food Index" :value="outputsA.food" color="emerald" />
-                <UiStatCard label="Energy Index" :value="outputsA.energy" color="amber" />
-                <UiStatCard label="Water Index" :value="outputsA.water" color="cyan" />
+                <StatCard label="Food Index" :value="outputsA.food" color="emerald" />
+                <StatCard label="Energy Index" :value="outputsA.energy" color="amber" />
+                <StatCard label="Water Index" :value="outputsA.water" color="cyan" />
             </div>
 
             <!-- Trade-off Analysis -->
@@ -128,7 +128,7 @@ const { data: outputsB } = await fetchProjections('scenario-b', inputsB)
              
              <div class="flex justify-between items-center mb-6">
                 <h3 class="font-semibold text-slate-800 dark:text-slate-100">Scenario B Outcomes</h3>
-                <UiBadge color="amber">Experimental</UiBadge>
+                <Badge color="amber">Experimental</Badge>
              </div>
 
              <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-2 md:p-4 border border-slate-100 dark:border-slate-700 mb-6">
