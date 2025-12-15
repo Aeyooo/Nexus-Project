@@ -2,6 +2,11 @@
 export const useNexusModel = () => {
   // We no longer need the external API URL here because we are using the internal proxy
   // configured in nuxt.config.ts
+
+  const normalize = (val: any) => {
+    const num = Number(val) || 0
+    return num > 1.0 ? num : num * 100
+  }
   
   const fetchProjections = async (
     id: string,
@@ -31,9 +36,9 @@ export const useNexusModel = () => {
         // console.log(`[${id}] Backend Response:`, response) // Debug log
         const results = response?.results || response?.metrics || response || {}
         return {
-           food: (Number(results.food_security_index) || 0) * 100,
-           energy: (Number(results.energy_security_index) || 0) * 100,
-           water: (Number(results.water_stress_index) || 0) * 100
+           food: normalize(results.food_security_index),
+           energy: normalize(results.energy_security_index),
+           water: normalize(results.water_stress_index)
         }
       }
     })
