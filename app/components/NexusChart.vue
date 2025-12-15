@@ -20,7 +20,7 @@ const metrics = computed(() => [
 <template>
   <div class="flex flex-col w-full">
     <!-- Plot Area -->
-    <div class="relative flex items-end justify-around h-48 gap-4 px-4 border-b border-slate-100 dark:border-slate-700">
+    <div class="relative flex items-end justify-around h-40 md:h-48 gap-2 md:gap-4 px-2 md:px-4 border-b border-slate-100 dark:border-slate-700">
       <!-- Grid Lines -->
       <div class="absolute inset-0 flex flex-col justify-between py-2 pointer-events-none z-0">
         <div v-for="i in 5" :key="i" class="w-full h-px bg-slate-50 dark:bg-slate-800/50 border-t border-dashed border-slate-200 dark:border-slate-700"></div>
@@ -30,13 +30,13 @@ const metrics = computed(() => [
       <div v-for="(metric, idx) in metrics" :key="idx" class="relative z-10 w-full h-full flex items-end justify-center group">
         <!-- Uncertainty Band -->
         <div 
-          class="absolute w-12 rounded-t-lg opacity-20 transition-all duration-500 ease-out"
+          class="absolute w-10 md:w-12 rounded-t-lg opacity-20 transition-all duration-500 ease-out"
           :style="{ height: `${Math.min(100, metric.value + 15)}%`, backgroundColor: metric.color }"
         ></div>
         
         <!-- Main Bar -->
         <div 
-          class="w-8 rounded-t-md shadow-lg transition-all duration-500 ease-out relative hover:brightness-110 cursor-pointer"
+          class="w-6 md:w-8 rounded-t-md shadow-lg transition-all duration-500 ease-out relative hover:brightness-110 cursor-pointer"
           :style="{ height: `${metric.value}%`, backgroundColor: metric.color }"
         >
           <!-- Tooltip -->
@@ -49,11 +49,12 @@ const metrics = computed(() => [
     </div>
 
     <!-- Labels -->
-    <div class="flex justify-around px-4 pt-4">
+    <div class="flex justify-around px-2 md:px-4 pt-4">
       <div v-for="(metric, idx) in metrics" :key="idx" class="flex flex-col items-center w-full">
-        <div class="flex items-center gap-1.5 text-xs font-semibold text-slate-600 dark:text-slate-400">
+        <div class="flex items-center gap-1.5 text-[10px] md:text-xs font-semibold text-slate-600 dark:text-slate-400">
           <component :is="metric.icon" :size="14" :style="{ color: metric.color }" />
-          {{ metric.label }}
+          <span class="hidden sm:inline">{{ metric.label }}</span>
+          <span class="sm:hidden">{{ metric.label.split(' ')[0] }}</span>
         </div>
       </div>
     </div>

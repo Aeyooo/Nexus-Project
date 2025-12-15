@@ -24,29 +24,29 @@ const { data: outputsB } = await fetchProjections('scenario-b', inputsB)
   <div :class="{ dark: isDark }" class="h-screen flex flex-col overflow-hidden bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100">
     
     <!-- App Header -->
-    <header class="h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-6 shrink-0 z-20">
+    <header class="h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-4 md:px-6 shrink-0 z-20">
       <!-- ... Header content ... -->
-      <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2 md:gap-4">
         <NuxtLink to="/" class="flex items-center gap-2 group">
            <div class="bg-indigo-600 text-white p-1.5 rounded shadow-sm">
               <TrendingUp :size="18" />
             </div>
-            <span class="font-bold">NexusModeler</span>
+            <span class="font-bold hidden md:inline">NexusModeler</span>
         </NuxtLink>
-        <div class="h-6 w-px bg-slate-200 dark:bg-slate-700 mx-2"></div>
+        <div class="hidden md:block h-6 w-px bg-slate-200 dark:bg-slate-700 mx-2"></div>
         <!-- Tab Switcher -->
         <nav class="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
-           <button @click="activeTab = 'single'" :class="['px-3 py-1.5 text-xs font-semibold rounded-md flex gap-2 transition-all', activeTab === 'single' ? 'bg-white dark:bg-slate-700 shadow-sm text-indigo-700 dark:text-indigo-300' : 'text-slate-500']">
-             <LayoutDashboard :size="14" /> Single
+           <button @click="activeTab = 'single'" :class="['px-2 md:px-3 py-1.5 text-xs font-semibold rounded-md flex gap-2 transition-all', activeTab === 'single' ? 'bg-white dark:bg-slate-700 shadow-sm text-indigo-700 dark:text-indigo-300' : 'text-slate-500']">
+             <LayoutDashboard :size="14" /> <span class="hidden sm:inline">Single</span>
            </button>
-           <button @click="activeTab = 'compare'" :class="['px-3 py-1.5 text-xs font-semibold rounded-md flex gap-2 transition-all', activeTab === 'compare' ? 'bg-white dark:bg-slate-700 shadow-sm text-indigo-700 dark:text-indigo-300' : 'text-slate-500']">
-             <GitCompare :size="14" /> Compare
+           <button @click="activeTab = 'compare'" :class="['px-2 md:px-3 py-1.5 text-xs font-semibold rounded-md flex gap-2 transition-all', activeTab === 'compare' ? 'bg-white dark:bg-slate-700 shadow-sm text-indigo-700 dark:text-indigo-300' : 'text-slate-500']">
+             <GitCompare :size="14" /> <span class="hidden sm:inline">Compare</span>
            </button>
         </nav>
       </div>
 
       <!-- Add Toggle Button -->
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2 md:gap-3">
           <button @click="toggleTheme" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
             <Sun v-if="isDark" :size="20" class="text-slate-500 dark:text-slate-400" />
             <Moon v-else :size="20" class="text-slate-500 dark:text-slate-400" />
@@ -55,9 +55,10 @@ const { data: outputsB } = await fetchProjections('scenario-b', inputsB)
       </div>
     </header>
 
-    <div class="flex flex-1 overflow-hidden">
+    <!-- RESPONSIVE LAYOUT CHANGE: flex-col on mobile, flex-row on desktop -->
+    <div class="flex flex-1 flex-col md:flex-row overflow-hidden">
       <!-- Sidebar Controls -->
-      <aside class="w-80 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 p-6 overflow-y-auto">
+      <aside class="w-full md:w-80 bg-white dark:bg-slate-900 border-b md:border-b-0 md:border-r border-slate-200 dark:border-slate-800 p-4 md:p-6 overflow-y-auto shrink-0">
         <h2 class="text-sm font-bold uppercase tracking-wider mb-6 flex items-center gap-2">
           <span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span> Policy Levers
         </h2>
@@ -80,25 +81,26 @@ const { data: outputsB } = await fetchProjections('scenario-b', inputsB)
       </aside>
 
       <!-- Main Viz Area -->
-      <main class="flex-1 p-8 overflow-y-auto bg-slate-50 dark:bg-slate-950">
-        <div :class="['grid gap-6', activeTab === 'compare' ? 'grid-cols-2' : 'grid-cols-1']">
+      <main class="flex-1 p-4 md:p-8 overflow-y-auto bg-slate-50 dark:bg-slate-950">
+        <!-- RESPONSIVE GRID: Force 1 column on mobile, 2 columns on lg screens only when comparing -->
+        <div :class="['grid gap-6', activeTab === 'compare' ? 'grid-cols-1 lg:grid-cols-2' : 'grid-cols-1']">
           
           <!-- Card A -->
-          <Card class="p-6 animate-fade-up">
+          <Card class="p-4 md:p-6 animate-fade-up">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="font-semibold text-slate-800 dark:text-slate-100">Scenario A Outcomes</h3>
-                <Badge color="blue">Primary</Badge>
+                <UiBadge color="blue">Primary</UiBadge>
             </div>
             
-            <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-4 border border-slate-100 dark:border-slate-700 mb-6">
+            <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-2 md:p-4 border border-slate-100 dark:border-slate-700 mb-6">
                <NexusChart v-if="outputsA" :data="outputsA" />
             </div>
             
             <!-- Stat Cards A -->
-            <div class="grid grid-cols-3 gap-4">
-                <StatCard label="Food Index" :value="outputsA.food" color="emerald" />
-                <StatCard label="Energy Index" :value="outputsA.energy" color="amber" />
-                <StatCard label="Water Index" :value="outputsA.water" color="cyan" />
+            <div class="grid grid-cols-3 gap-2 md:gap-4">
+                <UiStatCard label="Food Index" :value="outputsA.food" color="emerald" />
+                <UiStatCard label="Energy Index" :value="outputsA.energy" color="amber" />
+                <UiStatCard label="Water Index" :value="outputsA.water" color="cyan" />
             </div>
 
             <!-- Trade-off Analysis -->
@@ -121,49 +123,49 @@ const { data: outputsB } = await fetchProjections('scenario-b', inputsB)
           </Card>
 
           <!-- Card B -->
-          <Card v-if="activeTab === 'compare'" class="p-6 border-indigo-200 dark:border-indigo-800 relative overflow-hidden animate-fade-up animate-delay-100">
+          <Card v-if="activeTab === 'compare'" class="p-4 md:p-6 border-indigo-200 dark:border-indigo-800 relative overflow-hidden animate-fade-up animate-delay-100">
              <div class="absolute top-0 right-0 w-24 h-24 bg-purple-100 dark:bg-purple-900/20 rounded-bl-full -mr-10 -mt-10 opacity-50 pointer-events-none"></div>
              
              <div class="flex justify-between items-center mb-6">
                 <h3 class="font-semibold text-slate-800 dark:text-slate-100">Scenario B Outcomes</h3>
-                <Badge color="amber">Experimental</Badge>
+                <UiBadge color="amber">Experimental</UiBadge>
              </div>
 
-             <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-4 border border-slate-100 dark:border-slate-700 mb-6">
+             <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-2 md:p-4 border border-slate-100 dark:border-slate-700 mb-6">
                <NexusChart v-if="outputsB" :data="outputsB" />
             </div>
              
              <!-- Stat Cards B (Comparison Logic) -->
-             <div class="grid grid-cols-3 gap-4">
+             <div class="grid grid-cols-3 gap-2 md:gap-4">
                 <!-- Food Comparison -->
-                <div class="bg-white dark:bg-slate-800 p-3 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm">
+                <div class="bg-white dark:bg-slate-800 p-2 md:p-3 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm">
                     <div class="flex justify-between items-end">
-                        <div class="text-xs text-slate-500 dark:text-slate-400 font-semibold mb-1">Food</div>
-                        <div :class="['text-xs font-bold', outputsB.food > outputsA.food ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400']">
+                        <div class="text-[10px] md:text-xs text-slate-500 dark:text-slate-400 font-semibold mb-1">Food</div>
+                        <div :class="['text-[10px] md:text-xs font-bold', outputsB.food > outputsA.food ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400']">
                            {{ outputsB.food > outputsA.food ? '+' : '' }}{{ (outputsB.food - outputsA.food).toFixed(0) }}
                         </div>
                     </div>
-                    <div class="text-xl font-bold text-slate-800 dark:text-slate-100">{{ outputsB.food.toFixed(0) }}</div>
+                    <div class="text-lg md:text-xl font-bold text-slate-800 dark:text-slate-100">{{ outputsB.food.toFixed(0) }}</div>
                 </div>
                 <!-- Energy Comparison -->
-                <div class="bg-white dark:bg-slate-800 p-3 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm">
+                <div class="bg-white dark:bg-slate-800 p-2 md:p-3 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm">
                     <div class="flex justify-between items-end">
-                        <div class="text-xs text-slate-500 dark:text-slate-400 font-semibold mb-1">Energy</div>
-                        <div :class="['text-xs font-bold', outputsB.energy > outputsA.energy ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400']">
+                        <div class="text-[10px] md:text-xs text-slate-500 dark:text-slate-400 font-semibold mb-1">Energy</div>
+                        <div :class="['text-[10px] md:text-xs font-bold', outputsB.energy > outputsA.energy ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400']">
                            {{ outputsB.energy > outputsA.energy ? '+' : '' }}{{ (outputsB.energy - outputsA.energy).toFixed(0) }}
                         </div>
                     </div>
-                    <div class="text-xl font-bold text-slate-800 dark:text-slate-100">{{ outputsB.energy.toFixed(0) }}</div>
+                    <div class="text-lg md:text-xl font-bold text-slate-800 dark:text-slate-100">{{ outputsB.energy.toFixed(0) }}</div>
                 </div>
                 <!-- Water Comparison -->
-                <div class="bg-white dark:bg-slate-800 p-3 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm">
+                <div class="bg-white dark:bg-slate-800 p-2 md:p-3 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm">
                     <div class="flex justify-between items-end">
-                        <div class="text-xs text-slate-500 dark:text-slate-400 font-semibold mb-1">Water</div>
-                        <div :class="['text-xs font-bold', outputsB.water > outputsA.water ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400']">
+                        <div class="text-[10px] md:text-xs text-slate-500 dark:text-slate-400 font-semibold mb-1">Water</div>
+                        <div :class="['text-[10px] md:text-xs font-bold', outputsB.water > outputsA.water ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400']">
                            {{ outputsB.water > outputsA.water ? '+' : '' }}{{ (outputsB.water - outputsA.water).toFixed(0) }}
                         </div>
                     </div>
-                    <div class="text-xl font-bold text-slate-800 dark:text-slate-100">{{ outputsB.water.toFixed(0) }}</div>
+                    <div class="text-lg md:text-xl font-bold text-slate-800 dark:text-slate-100">{{ outputsB.water.toFixed(0) }}</div>
                 </div>
              </div>
 
