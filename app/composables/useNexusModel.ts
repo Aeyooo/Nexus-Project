@@ -1,11 +1,8 @@
+// composables/useNexusModel.ts
 export const useNexusModel = () => {
-  const config = useRuntimeConfig()
+  // We no longer need the external API URL here because we are using the internal proxy
+  // configured in nuxt.config.ts
   
-  // Safe Fallback: clean URL string
-  const rawApiBase = config.public.apiBase || '[https://cpe-2lfo.onrender.com](https://cpe-2lfo.onrender.com)'
-  // Remove markdown artifacts if present
-  const apiBase = rawApiBase.replace(/\[|\]|\(.*\)/g, '')
-
   const fetchProjections = async (
     id: string,
     inputs: Ref<{ crops: number; renewables: number; waterEff: number }>
@@ -22,8 +19,8 @@ export const useNexusModel = () => {
       }
     }))
 
-    // FIX: Added trailing slash to /api/scenarios/ to prevent 308 redirects causing CORS errors
-    const { data, error, pending, refresh } = await useFetch(`${apiBase}/api/scenarios/`, {
+    // FIX: Using '/proxy/api/scenarios/' targets the Nuxt Proxy, avoiding CORS.
+    const { data, error, pending, refresh } = await useFetch(`/proxy/api/scenarios/`, {
       key: id,
       method: 'POST',
       body: payload,
@@ -31,13 +28,8 @@ export const useNexusModel = () => {
       lazy: true,
       default: () => ({ food: 0, energy: 0, water: 0 }),
       transform: (response: any) => {
-        // DEBUG: Log the full response to the console to see the structure
-        //console.log(`[${id}] Backend Response:`, response)
-
-        // Attempt to find the metrics in common nesting patterns
-        // The backend likely returns the Scenario object, which might have 'results' or 'metrics' nested
+        // console.log(`[${id}] Backend Response:`, response) // Debug log
         const results = response?.results || response?.metrics || response || {}
-        
         return {
            food: (Number(results.food_security_index) || 0) * 100,
            energy: (Number(results.energy_security_index) || 0) * 100,
@@ -46,7 +38,6 @@ export const useNexusModel = () => {
       }
     })
 
-    // Manual watcher for slider changes
     let timeout: NodeJS.Timeout
     watch(inputs, () => {
       clearTimeout(timeout)

@@ -9,6 +9,13 @@ export default defineNuxtConfig({
       darkMode: 'class'
     }
   },
+  // CORS PROXY CONFIGURATION
+  routeRules: {
+    // Requests to /proxy/api/... will be forwarded to the Render Backend
+    '/proxy/api/**': { 
+      proxy: '[https://cpe-2lfo.onrender.com/api/](https://cpe-2lfo.onrender.com/api/)**',
+    }
+  },
   app: {
     pageTransition: { name: 'page', mode: 'out-in' }, // Smooth page transitions
     head: {
@@ -24,7 +31,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      apiBase: 'https://cpe-2lfo.onrender.com' // Live Production API
+      apiBase: '' // Live Production API
     }
   }
 })
