@@ -13,7 +13,7 @@ export default defineNuxtConfig({
   routeRules: {
     // Requests to /proxy/api/... will be forwarded to the Render Backend
     '/proxy/api/**': { 
-      proxy: '[https://cpe-2lfo.onrender.com/api/](https://cpe-2lfo.onrender.com/api/)**',
+      proxy: 'https://cpe-2lfo.onrender.com/api/',
     }
   },
   app: {
