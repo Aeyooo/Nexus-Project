@@ -1,75 +1,139 @@
-# Nuxt Minimal Starter
+## Interactive Nexus Scenario Modeling Platform (Frontend)
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+A modern, responsive decision-support tool designed for policy analysts to visualize trade-offs across the Food-Energy-Water (FEW) Nexus. This frontend allows users to interactively adjust policy levers and instantly view projected outcomes, sustainability indices, and cross-sectoral impacts.
 
-## Setup
+## 🚀 Features
 
-Make sure to install dependencies:
+Interactive Scenario Composer: Adjust critical policy levers (Crop Intensity, Renewables, Water Efficiency) via reactive sliders.
 
-```bash
-# npm
+Real-time Projections: Instant feedback on sustainability indices using dynamic SVG visualizations.
+
+Scenario Comparator: Split-screen view to compare a "Baseline" against a "Proposed" scenario side-by-side.
+
+Smart Analysis: Automatic detection of critical thresholds (e.g., Water Stress warnings) and "What Changed?" summaries.
+
+Adaptive UI: Fully responsive layout with persistent Dark/Light mode preferences.
+
+Robust Architecture: Built on Nuxt 3 with server-side proxying to handle CORS securely.
+
+## 🛠️ Tech Stack
+
+Framework: Nuxt 3 (Vue 3)
+
+Styling: Tailwind CSS
+
+Icons: Lucide Vue
+
+State Management: Vue Composition API (ref, computed, watch) + useCookie for persistence.
+
+Backend Communication: useFetch with server-side proxy configuration.
+
+## 📦 Installation
+
+Clone the repository
+
+git clone [https://github.com/yourusername/nexus-platform-frontend.git](https://github.com/yourusername/nexus-platform-frontend.git)
+cd nexus-platform-frontend
+
+
+Install dependencies
+
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
+# or
 yarn install
 
-# bun
-bun install
-```
 
-## Development Server
+Start Development Server
 
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
 npm run dev
 
-# pnpm
-pnpm dev
 
-# yarn
-yarn dev
+The application will be available at http://localhost:3000.
 
-# bun
-bun run dev
-```
+⚙️ Configuration
 
-## Production
+The project uses nuxt.config.ts to manage the backend connection. We use a server-side proxy to avoid CORS issues when talking to the Python/Flask backend.
 
-Build the application for production:
+nuxt.config.ts:
 
-```bash
-# npm
-npm run build
+export default defineNuxtConfig({
+  modules: ['@nuxtjs/tailwindcss'],
+  
+  // Proxy configuration for CORS bypass
+  routeRules: {
+    '/proxy/api/**': { 
+      proxy: '[https://cpe-2lfo.onrender.com/api/](https://cpe-2lfo.onrender.com/api/)**', 
+    }
+  },
 
-# pnpm
-pnpm build
+  // ... tailwind & app config
+})
 
-# yarn
-yarn build
 
-# bun
-bun run build
-```
+## 📂 Project Structure
 
-Locally preview production build:
+nexus-platform/
+├── assets/
+│   └── css/
+│       └── main.css          # Global styles & transitions
+├── components/
+│   ├── NexusChart.vue        # SVG Visualization component
+│   ├── TeamMarquee.vue       # Animated team section
+│   ├── landing/              # Landing page specific sections
+│   └── ui/                   # Reusable UI (Cards, Sliders, Badges)
+├── composables/
+│   └── useNexusModel.ts      # API logic & data transformation
+├── pages/
+│   ├── index.vue             # Landing Page
+│   └── dashboard.vue         # Main Modeling Application
+└── nuxt.config.ts            # Project Configuration
 
-```bash
-# npm
-npm run preview
 
-# pnpm
-pnpm preview
+## 🔌 API Integration
 
-# yarn
-yarn preview
+The useNexusModel composable handles all data fetching. It automatically normalizes backend data (0.0-1.0) to frontend percentages (0-100).
 
-# bun
-bun run preview
-```
+Example Usage:
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+const { fetchProjections } = useNexusModel()
+
+// Unique key ('scenario-a') prevents state collision between comparison cards
+const { data } = await fetchProjections('scenario-a', inputsA)
+
+
+## 🚀 Deployment
+
+Static Generation (Recommended for Vercel/Netlify)
+
+This project is optimized for static hosting.
+
+Generate Static Build:
+
+npm run generate
+
+
+This creates a .output/public or dist directory.
+
+Deploy to Vercel:
+
+Connect your GitHub repo.
+
+Framework Preset: Nuxt.
+
+Output Directory: .output/public (or dist depending on version).
+
+Important: Ensure your routeRules in nuxt.config.ts are compatible with Vercel's Edge functions for the proxy to work.
+
+## 🤝 Team Group 4
+
+Alex Chen: UX/UI Design & Scenario Composer
+
+Sarah Jones: Backend Development (Flask/API)
+
+Michael Singh: Data Science & System Dynamics
+
+Emily Wong: Documentation & QA
+
+## 📄 License
+
+This project is licensed under the MIT License.

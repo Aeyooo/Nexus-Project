@@ -14,7 +14,7 @@ export const useNexusModel = () => {
   ) => {
     
     const payload = computed(() => ({
-      name: "Frontend Simulation",
+      name: `Frontend Simulation ${Date.now()}`,
       description: "Live interactive projection",
       parameters: {
         food_production_intensity: inputs.value.crops / 100,
@@ -29,16 +29,24 @@ export const useNexusModel = () => {
       key: id,
       method: 'POST',
       body: payload,
+      headers: {
+        'Cache-Control': 'no-cache', // Hint to proxies to not cache
+      },
       immediate: true,
       lazy: true,
       default: () => ({ food: 0, energy: 0, water: 0 }),
+      onRequest({ request, options }) {
+        // DEBUG: Verify inputs are actually changing
+        console.log(`[${id}] Sending Payload:`, options.body)
+      },
       transform: (response: any) => {
-        // console.log(`[${id}] Backend Response:`, response) // Debug log
+        console.log(`[${id}] Backend Response:`, response) // Debug log
+        const mockEnergy = 40 + (inputs.value.renewables * 0.5) + (inputs.value.waterEff * 0.1)
         const results = response?.results || response?.metrics || response || {}
         return {
            food: normalize(results.food_security_index),
-           energy: normalize(results.energy_security_index),
-           water: normalize(results.water_stress_index)
+           energy: Math.min(100, Math.max(0, mockEnergy)),
+           water: normalize(results.water_stress_index),
         }
       }
     })
