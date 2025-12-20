@@ -32,8 +32,8 @@ Backend Communication: useFetch with server-side proxy configuration.
 
 Clone the repository
 
-git clone [https://github.com/yourusername/nexus-platform-frontend.git](https://github.com/yourusername/nexus-platform-frontend.git)
-cd nexus-platform-frontend
+git clone [https://github.com/Aeyooo/Nexus-Project.git](https://github.com/Aeyooo/Nexus-Project.git)
+cd Nexus-Project
 
 
 Install dependencies
@@ -48,7 +48,7 @@ Start Development Server
 npm run dev
 
 
-The application will be available at http://localhost:3000.
+The application will be available at (https://nexus-project-gilt.vercel.app/).
 
 ⚙️ Configuration
 
@@ -56,6 +56,7 @@ The project uses nuxt.config.ts to manage the backend connection. We use a serve
 
 nuxt.config.ts:
 
+```ts
 export default defineNuxtConfig({
   modules: ['@nuxtjs/tailwindcss'],
   
@@ -68,10 +69,12 @@ export default defineNuxtConfig({
 
   // ... tailwind & app config
 })
+```
 
 
 ## 📂 Project Structure
 
+```
 nexus-platform/
 ├── assets/
 │   └── css/
@@ -87,6 +90,7 @@ nexus-platform/
 │   ├── index.vue             # Landing Page
 │   └── dashboard.vue         # Main Modeling Application
 └── nuxt.config.ts            # Project Configuration
+```
 
 
 ## 🔌 API Integration
@@ -95,10 +99,12 @@ The useNexusModel composable handles all data fetching. It automatically normali
 
 Example Usage:
 
+```ts
 const { fetchProjections } = useNexusModel()
 
 // Unique key ('scenario-a') prevents state collision between comparison cards
 const { data } = await fetchProjections('scenario-a', inputsA)
+```
 
 
 ## 🚀 Deployment
@@ -126,13 +132,17 @@ Important: Ensure your routeRules in nuxt.config.ts are compatible with Vercel's
 
 ## 🤝 Team Group 4
 
-Alex Chen: UX/UI Design & Scenario Composer
+Eze, Joseph Uzochukwu: UX/UI Design & Scenario Composer
 
-Sarah Jones: Backend Development (Flask/API)
+Oladipupo Olatunji: Backend Development (Flask/API)
 
-Michael Singh: Data Science & System Dynamics
+Ayeni Adeola Opeyemi: Data Science & System Dynamics
 
-Emily Wong: Documentation & QA
+Ojo Daniel Ayotomiwa: Documentation & QA
+
+Dosunmu Ayomide: Frontend Developer
+
+Olawole Daniel: Backend Developer
 
 ## 📄 License
 
