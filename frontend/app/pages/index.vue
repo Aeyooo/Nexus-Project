@@ -128,7 +128,7 @@ const scrollToSection = (id: string) => {
                     <ul class="space-y-2">
                         <li><button @click="scrollToSection('team')" class="hover:text-white transition-colors">About GRP 4</button></li>
                         <li><a href="#" class="hover:text-white transition-colors">Documentation</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">GitHub Repo</a></li>
+                        <li><a href="https://github.com/Aeyooo/Nexus-Project" class="hover:text-white transition-colors">GitHub Repo</a></li>
                     </ul>
                 </div>
             </div>
